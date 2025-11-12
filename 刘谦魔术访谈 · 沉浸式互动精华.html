@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>刘谦魔术访谈·沉浸式互动精华</title>
+<style>
+  :root{
+    --bg:#0b1220;           /* 深色星空底，不用纯黑 */
+    --txt:#c9d6ff;          /* 主文用偏蓝灰，避免纯白 */
+    --muted:#90a4b8;        /* 次级文字 */
+    --glass:rgba(255,255,255,.06);
+    --glass2:rgba(255,255,255,.10);
+    --stroke:rgba(255,255,255,.12);
+
+    --g1:#8ec5ff;  /* 多色渐变：蓝-紫-金-青 */
+    --g2:#a78bfa;
+    --g3:#ffd166;
+    --g4:#79f2c0;
+
+    --accent:#9bd5ff;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; font:16px/1.7 Inter,ui-sans-serif,system-ui,Segoe UI,Roboto,Helvetica,Arial,"PingFang SC","Hiragino Sans GB","Microsoft Yahei",sans-serif;
+    color:var(--txt); background:radial-gradient(1200px 800px at 70% 10%, #16213e 0%, var(--bg) 60%) fixed;
+    overflow-x:hidden;
+  }
+
+  /* 背景漂浮光点 */
+  .orb{ position:fixed; inset:0; pointer-events:none; z-index:0 }
+  .orb i{
+    position:absolute; width:6px; height:6px; border-radius:50%; background:radial-gradient(circle, #d0e7ff, #7fb7ff, transparent 70%);
+    animation:float 10s ease-in-out infinite;
+    opacity:.5; filter:blur(.3px)
+  }
+  @keyframes float{ 0%{ transform:translateY(0) } 50%{ transform:translateY(-30px)} 100%{ transform:translateY(0)} }
+
+  /* 容器/玻璃卡 */
+  .wrap{ width:min(1120px,92vw); margin:80px auto; position:relative; z-index:1}
+  .hero{ display:grid; gap:18px; margin-bottom:22px}
+  .title{ font-weight:800; font-size:clamp(26px,4vw,40px); letter-spacing:.5px;
+    background:linear-gradient(120deg,var(--g1),var(--g2),var(--g3),var(--g4));
+    -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .subtitle{ color:var(--muted)}
+
+  .bar{ display:flex; gap:12px; flex-wrap:wrap }
+  .chip{ padding:6px 10px; border-radius:999px; border:1px solid var(--stroke); background:var(--glass);
+         color:var(--accent); font-weight:600; letter-spacing:.3px }
+
+  .panel{ background:linear-gradient(180deg, var(--glass), rgba(255,255,255,.02));
+          border:1px solid var(--stroke); border-radius:18px; padding:14px 16px; 
+          box-shadow:0 8px 30px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.06);
+          transition:transform .35s cubic-bezier(.22,.93,.35,1), background .35s;
+  }
+  .panel:hover{ transform:translateY(-2px) }
+
+  /* 折叠头 */
+  details{ border-radius:18px; overflow:hidden; margin:12px 0; background:transparent }
+  summary{ list-style:none; cursor:pointer; display:flex; align-items:center; gap:12px; padding:14px 16px; }
+  summary::-webkit-details-marker{ display:none }
+  .badge{ font-size:12px; font-weight:800; padding:6px 10px; border-radius:999px; color:#0b1220;
+          background:linear-gradient(120deg,var(--g1),var(--g2)); box-shadow:inset 0 0 0 1px rgba(0,0,0,.15)}
+  .ttl{ font-size:18px; font-weight:750; letter-spacing:.3px }
+  .chev{ margin-left:auto; transition:transform .35s}
+  details[open] .chev{ transform:rotate(180deg) }
+
+  .content{ padding:0 16px 16px 16px; animation:reveal .45s cubic-bezier(.16,.84,.44,1) }
+  @keyframes reveal{ from{opacity:0; transform:translateY(-6px)} to{opacity:1; transform:translateY(0)} }
+
+  /* 双色列表 */
+  ul.kv{ margin:12px 0; padding:0; list-style:none; display:grid; gap:10px }
+  .kv li{ display:grid; grid-template-columns:140px 1fr; gap:10px; padding:10px; border-radius:12px; background:rgba(255,255,255,.03); border:1px dashed rgba(255,255,255,.08)}
+  .k{ color:#a3e4ff; font-weight:700 }
+  .v{ color:#ffe59a }
+
+  /* 金句卡 & 指标条 */
+  .quote{ position:relative; padding:16px; border-radius:16px; background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02)); border:1px solid var(--stroke) }
+  .quote b{ background:linear-gradient(120deg,#ffe59a,#ffd166); -webkit-background-clip:text; color:transparent }
+  .meter{ display:grid; gap:10px; margin:8px 0 }
+  .meter .row{ display:grid; grid-template-columns:140px 1fr 80px; align-items:center; gap:10px }
+  .barline{ height:10px; border-radius:999px; background:rgba(255,255,255,.06); position:relative; overflow:hidden }
+  .barline i{ position:absolute; inset:0; width:var(--w,60%); background:linear-gradient(90deg,var(--g1),var(--g2),var(--g3)); border-radius:inherit; box-shadow:0 0 18px rgba(167,139,250,.35) }
+  .row small{ color:var(--muted) }
+
+  /* 底部操作 */
+  .ops{ position:sticky; bottom:18px; display:flex; gap:10px; justify-content:flex-end; margin-top:16px; z-index:5 }
+  .btn{ padding:10px 14px; border-radius:12px; border:1px solid var(--stroke); background:var(--glass2); color:var(--accent); cursor:pointer; backdrop-filter:blur(6px); font-weight:700 }
+  .btn:active{ transform:translateY(1px) }
+
+  /* 思维导图区 */
+  .mind{ height:460px; border-radius:18px; border:1px solid var(--stroke); background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.015)); position:relative; overflow:hidden }
+  canvas{ position:absolute; inset:0 }
+  .legend{ position:absolute; right:10px; top:10px; display:flex; gap:6px; align-items:center; font-size:12px; color:var(--muted) }
+  .dot{ width:10px; height:10px; border-radius:50% }
+
+  /* 段首微动画 */
+  .fade{ opacity:0; transform:translateY(6px); transition:opacity .6s ease, transform .6s ease }
+  .fade.show{ opacity:1; transform:translateY(0) }
+
+  /* 多色文本（避免纯白） */
+  .c1{ color:#8ec5ff } .c2{ color:#a78bfa } .c3{ color:#ffd166 } .c4{ color:#79f2c0 } .c5{ color:#ffb3c1 }
+</style>
+</head>
+<body>
+  <!-- 背景漂浮光点 -->
+  <div class="orb" aria-hidden="true"></div>
+
+  <div class="wrap">
+    <header class="hero">
+      <div class="title">刘谦魔术访谈 · 沉浸式互动精华</div>
+      <div class="subtitle">主题：如何用 <span class="c1">注意力导演术</span> + <span class="c2">可错设计</span> + <span class="c3">商业叙事</span>，把“不可能”变成“看似合理的奇迹”。</div>
+      <div class="bar">
+        <span class="chip">玻璃拟态</span>
+        <span class="chip">折叠面板</span>
+        <span class="chip">漂浮光点</span>
+        <span class="chip">思维导图</span>
+      </div>
+    </header>
+
+    <!-- A. 10条硬核总结 -->
+    <details class="panel" open>
+      <summary><span class="badge">核心</span><span class="ttl">10条硬核结论</span><svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2"/></svg></summary>
+      <div class="content">
+        <ul class="kv fade">
+          <li><div class="k">魔术的本质</div><div class="v">不是“看不出怎么做”，而是“根本不可能”。把观众<strong class="c2">送进冲突世界</strong>：所见与常识全面碰撞。</div></li>
+          <li><div class="k">手快≠故事</div><div class="v">速度只是最低条件；<strong class="c1">注意力引导</strong>（misdirection）才是大招。</div></li>
+          <li><div class="k">最高阶创作</div><div class="v">将<strong class="c3">素质与复杂→少与物料</strong>，做<strong class="c3">最小最大化</strong>：道具极简、效果极大。</div></li>
+          <li><div class="k">导演的工作</div><div class="v">设计<strong class="c1">冲突→转折→回收</strong>的节奏与结构，让观众“自带大数据”。</div></li>
+          <li><div class="k">职业壁垒</div><div class="v">在细节里打造<strong class="c4">高级感</strong>：品牌叙事、舞台礼仪、节奏管理、共情结构。</div></li>
+          <li><div class="k">春晚成功学</div><div class="v">高频转场+<strong class="c2">意权接位</strong>（托/特效/剪接）单点不立；<strong>一眼被看穿</strong>即崩。</div></li>
+          <li><div class="k">失败与复盘</div><div class="v">承认出错，以幽默化解；把“<strong class="c5">可错而不伤大局</strong>”纳入设计。</div></li>
+          <li><div class="k">战术层级</div><div class="v">三年细节，一年梳理：将<strong class="c1">镜语</strong>、节奏、共情统筹为<strong class="c2">可复制</strong>的舞台包。</div></li>
+          <li><div class="k">行业升级</div><div class="v">从“个体艺人”→“大众情绪服务”，建立<strong class="c3">商业级供给标准</strong>。</div></li>
+          <li><div class="k">人生算法</div><div class="v">少“刚性目标”，多“方向与过程的愉悦”；运气权重极高，但<strong class="c4">准备抓住它</strong>。</div></li>
+        </ul>
+        <div class="quote fade"><b>命句：</b>让证据自行运行，直到它仍然被故事说服。</div>
+      </div>
+    </details>
+
+    <!-- B. 方法论（五步） -->
+    <details class="panel">
+      <summary><span class="badge">方法</span><span class="ttl">创作与舞台方法论（5步）</span><svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2"/></svg></summary>
+      <div class="content fade">
+        <div class="meter">
+          <div class="row"><div class="k">① 情境搭建</div><div class="barline" style="--w:88%"><i></i></div><small>让观众“进入你身上”</small></div>
+          <div class="row"><div class="k">② 焦点控制</div><div class="barline" style="--w:92%"><i></i></div><small>看见≠意识到：视-意分离</small></div>
+          <div class="row"><div class="k">③ 叙事缝合</div><div class="barline" style="--w:80%"><i></i></div><small>把因果延迟到观众自行补全</small></div>
+          <div class="row"><div class="k">④ 反直觉回收</div><div class="barline" style="--w:86%"><i></i></div><small>排除法→唯一解，越简单越可信</small></div>
+          <div class="row"><div class="k">⑤ 真实残留</div><div class="barline" style="--w:74%"><i></i></div><small>留下“可验证碎片”，增强余韵</small></div>
+        </div>
+        <div class="quote"><b>导演提示：</b>每个转场都应回答一个问题：<span class="c1">为何此刻非这样不可？</span></div>
+      </div>
+    </details>
+
+    <!-- C. 风险·公信力·可错设计 -->
+    <details class="panel">
+      <summary><span class="badge">风险</span><span class="ttl">失败、公信力与“可错设计”</span><svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2"/></svg></summary>
+      <div class="content fade">
+        <ul class="kv">
+          <li><div class="k">直播/大场</div><div class="v">不要与<strong class="c2">观众的检查欲</strong>对撞；预先设置<strong class="c3">误差缓冲</strong>。</div></li>
+          <li><div class="k">美学与礼仪</div><div class="v">语气、动线、停顿是<strong class="c1">可信度资产</strong>；比招数更贵。</div></li>
+          <li><div class="k">危机脚本</div><div class="v">准备<strong class="c5">自嘲式复位</strong>、<strong class="c4">剧情侧路</strong>与<strong class="c1">共情收尾</strong>三件套。</div></li>
+        </ul>
+        <div class="quote"><b>底线：</b>错可以发生，但不能<strong class="c5">解释为偷换</strong>。</div>
+      </div>
+    </details>
+
+    <!-- D. 行业位势与商业化 -->
+    <details class="panel">
+      <summary><span class="badge">商业</span><span class="ttl">行业位势与商业化</span><svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2"/></svg></summary>
+      <div class="content fade">
+        <ul class="kv">
+          <li><div class="k">供给标准</div><div class="v">把个人作品包<strong class="c2">流程化</strong>：舞台包/道具包/叙事包→<strong class="c3">售卖为服务</strong>。</div></li>
+          <li><div class="k">品牌叙事</div><div class="v">“<span class="c1">我是谁</span>→我如何做→观众得到什么”三段式，统一<strong class="c4">纹理与语气</strong>。</div></li>
+          <li><div class="k">跨媒体</div><div class="v">把<strong class="c3">镜头语法</strong>加入舞台设计：近景证伪、远景造梦、剪辑做节拍。</div></li>
+        </ul>
+      </div>
+    </details>
+
+    <!-- E. 创作者的人生算法 -->
+    <details class="panel">
+      <summary><span class="badge">人生</span><span class="ttl">创作者的人生算法</span><svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2"/></svg></summary>
+      <div class="content fade">
+        <ul class="kv">
+          <li><div class="k">节奏管理</div><div class="v">把大目标拆成<strong class="c3">可复现的日常动作</strong>：练习表、复盘表、上台表。</div></li>
+          <li><div class="k">运气权重</div><div class="v">运气重要，但<strong class="c4">准备叫做抓住</strong>：维持低熵生活、持续曝光。</div></li>
+          <li><div class="k">长期主义</div><div class="v">对失败保持<strong class="c5">幽默和记录</strong>——给未来的你留证据。</div></li>
+        </ul>
+      </div>
+    </details>
+
+    <!-- F. 动态金句卡：横向滚动 -->
+    <section class="panel">
+      <div class="quote fade"><b>动态金句：</b>
+        <div style="display:grid; grid-auto-flow:column; gap:12px; overflow:auto; padding-bottom:6px">
+          <div class="panel" style="min-width:280px"><b>技巧是遮掩，故事是解释。</b><br><span class="c1">观众相信的从来不是招数，而是叙事。</span></div>
+          <div class="panel" style="min-width:280px"><b>越像误会，越像奇迹。</b><br><span class="c2">让观众“自己得出结论”。</span></div>
+          <div class="panel" style="min-width:280px"><b>最小最大化。</b><br><span class="c3">道具最少，证据最多，效果最大。</span></div>
+          <div class="panel" style="min-width:280px"><b>错误是道具的一部分。</b><br><span class="c5">把可错性写进剧本。</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- G. 思维导图（可拖拽） -->
+    <details class="panel" open>
+      <summary><span class="badge">导图</span><span class="ttl">全局思维导图（可拖拽）</span><svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2"/></svg></summary>
+      <div class="content">
+        <div class="mind" id="mind">
+          <div class="legend">
+            <span class="dot" style="background:#8ec5ff"></span>核心
+            <span class="dot" style="background:#a78bfa"></span>方法
+            <span class="dot" style="background:#ffd166"></span>商业
+            <span class="dot" style="background:#79f2c0"></span>人生
+          </div>
+          <canvas id="cv"></canvas>
+        </div>
+      </div>
+    </details>
+
+    <!-- 操作按钮 -->
+    <div class="ops">
+      <button class="btn" id="expand">全部展开</button>
+      <button class="btn" id="collapse">全部收起</button>
+    </div>
+  </div>
+
+<script>
+  /* ========== 背景光点 ========== */
+  const orb=document.querySelector('.orb');
+  for(let i=0;i<40;i++){
+    const s=document.createElement('i');
+    const x=Math.random()*100, y=Math.random()*100;
+    const d=8+Math.random()*12;
+    s.style.left=x+'%'; s.style.top=y+'%'; s.style.width=d+'px'; s.style.height=d+'px';
+    s.style.animationDuration=(8+Math.random()*8)+'s';
+    orb.appendChild(s);
+  }
+
+  /* ========== 折叠批量控制 ========== */
+  const expandBtn=document.getElementById('expand');
+  const collapseBtn=document.getElementById('collapse');
+  const allDetails=()=>Array.from(document.querySelectorAll('details'));
+  expandBtn.onclick=()=>allDetails().forEach(d=>d.open=true);
+  collapseBtn.onclick=()=>allDetails().forEach(d=>d.open=false);
+
+  /* ========== 进入视口微动画 ========== */
+  const io=new IntersectionObserver((els)=>{
+    els.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('show') })
+  },{threshold:.2});
+  document.querySelectorAll('.fade').forEach(el=>io.observe(el));
+
+  /* ========== 思维导图：先定义数据，再声明函数/监听器（关键修复点） ========== */
+  const mindBox=document.getElementById('mind');
+  const canvas=document.getElementById('cv');
+  const ctx=canvas.getContext('2d');
+
+  // 节点与连线 —— 提前初始化，避免 draw() 访问未定义
+  const nodes=[
+    {id:0, x:420, y:220, r:56, t:'刘谦·奇迹导演术', c:'#8ec5ff'},
+    {id:1, x:160, y:90,  r:42, t:'10条结论', c:'#8ec5ff'},
+    {id:2, x:700, y:100, r:40, t:'方法论5步', c:'#a78bfa'},
+    {id:3, x:120, y:320, r:36, t:'风险&公信力', c:'#ffd166'},
+    {id:4, x:740, y:320, r:36, t:'行业与商业化', c:'#ffd166'},
+    {id:5, x:430, y:400, r:40, t:'人生算法', c:'#79f2c0'}
+  ];
+  const edges=[[0,1],[0,2],[0,3],[0,4],[0,5]];
+
+  // 轻量自测：控制台可见
+  console.assert(Array.isArray(nodes) && nodes.length>0, '思维导图 nodes 初始化失败');
+  console.assert(Array.isArray(edges) && edges.length>0, '思维导图 edges 初始化失败');
+
+  function fit(){
+    canvas.width=mindBox.clientWidth;
+    canvas.height=mindBox.clientHeight;
+    draw();
+  }
+
+  function draw(){
+    if(!Array.isArray(nodes)||!Array.isArray(edges)) return;
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    // edges
+    ctx.lineWidth=1.2; ctx.strokeStyle='rgba(255,255,255,.25)';
+    edges.forEach(([i,j])=>{
+      const a=nodes[i], b=nodes[j];
+      if(!a||!b) return;
+      ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
+    });
+
+    // nodes
+    nodes.forEach(n=>{
+      const g=ctx.createRadialGradient(n.x-4,n.y-6,4,n.x,n.y,n.r);
+      g.addColorStop(0,'rgba(255,255,255,.8)');
+      g.addColorStop(1,n.c);
+      ctx.fillStyle=g; ctx.beginPath(); ctx.arc(n.x,n.y,n.r,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle='#0b1220'; ctx.font='700 14px Inter, system-ui, sans-serif';
+      ctx.textAlign='center'; ctx.fillText(n.t,n.x,n.y+5);
+    });
+  }
+
+  // 拖拽
+  let drag=null, offX=0, offY=0;
+  function pos(e){ const r=canvas.getBoundingClientRect(); return {x:e.clientX-r.left, y:e.clientY-r.top} }
+  function dist(a,b){ return Math.hypot(a.x-b.x,a.y-b.y) }
+
+  canvas.addEventListener('mousedown',e=>{
+    const p=pos(e);
+    for(const n of nodes){ if(dist(p,n)<n.r){ drag=n; offX=p.x-n.x; offY=p.y-n.y; break } }
+  });
+  canvas.addEventListener('mousemove',e=>{
+    if(!drag) return;
+    const p=pos(e); drag.x=p.x-offX; drag.y=p.y-offY; draw();
+  });
+  window.addEventListener('mouseup',()=>drag=null);
+
+  // 监听在最后绑定，再首次 fit（确保 nodes/edges 已就绪）
+  window.addEventListener('resize',fit);
+  fit();
+</script>
+</body>
+</html>

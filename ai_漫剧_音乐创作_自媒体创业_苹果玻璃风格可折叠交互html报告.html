@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>AI 漫剧 · 音乐创作 · 自媒体 — 苹果毛玻璃·顶级交互报告</title>
+<style>
+/* ====== Design Tokens ====== */
+:root{
+  --bg: radial-gradient(1400px 900px at 10% -10%,#0b1020 0%,#0a0f22 40%,#0a0f26 100%);
+  --glass: rgba(18,24,46,.58);
+  --stroke: rgba(255,255,255,.10);
+  --soft-stroke: rgba(255,255,255,.06);
+  --text: #EAF1FF;
+  --muted: #97A6C6;
+  --cyan: #4DD5FF;  --violet:#A78BFA; --pink:#FF7AC3; --lime:#8BFAAF; --amber:#FFCF6E;
+  --grad-brand: linear-gradient(90deg,#4DD5FF, #7AA5FF, #B78BFF, #FF7AC3, #FFB86B);
+  --grad-card: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);font-family:-apple-system, Segoe UI, Roboto, "PingFang SC";color:var(--text);overflow-x:hidden}
+.container{max-width:1200px;margin:40px auto;padding:24px;position:relative;z-index:2}
+
+/* ====== Apple Glass Shell ====== */
+.glass{background:var(--glass);border:1px solid var(--stroke);border-radius:28px;backdrop-filter: blur(28px) saturate(1.25);box-shadow:0 8px 45px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.12)}
+.hero{padding:36px 28px;position:sticky;top:12px}
+.title{font-size:34px;font-weight:900;letter-spacing:.6px;background:var(--grad-brand);-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-shadow:0 0 18px rgba(255,255,255,.15)}
+.sub{color:var(--muted);margin-top:6px}
+
+/* ====== Tabs ====== */
+.tabs{display:flex;gap:8px;align-items:center;margin:18px 0 8px}
+.tab{padding:10px 14px;border-radius:999px;border:1px solid var(--soft-stroke);background:var(--grad-card);cursor:pointer;color:#CFE2FF;user-select:none;transition:.25s}
+.tab.active{background:linear-gradient(90deg,rgba(255,255,255,.20),rgba(255,255,255,.06));color:#fff;border-color:rgba(255,255,255,.28);box-shadow:0 6px 22px rgba(90,140,255,.25)}
+
+/* ====== Sections (collapsible) ====== */
+section.panel{margin:16px 0;padding:16px 18px}
+summary{list-style:none;cursor:pointer;font-weight:900;font-size:18px;padding:10px 8px 10px 40px;position:relative;color:#CFE2FF}
+summary::marker{display:none}
+summary::before{content:attr(data-ico);position:absolute;left:10px;top:8px;filter:drop-shadow(0 2px 8px rgba(0,0,0,.35))}
+summary::after{content:"＋";position:absolute;right:10px;top:6px;font-weight:900;color:#fff;opacity:.9;transition:.3s}
+details[open] summary::after{content:"−";transform:rotate(180deg)}
+.content{padding:6px 4px 10px 6px;opacity:0;max-height:0;overflow:hidden;transition:max-height .55s cubic-bezier(.2,.8,.2,1), opacity .35s ease}
+details[open] .content{opacity:1;max-height:1200px}
+
+/* ====== Typography ====== */
+.lead{font-size:15px;line-height:1.9;color:#DBE7FF}
+ul,ol{margin:8px 0 12px 22px}
+li{margin:6px 0;line-height:1.8;color:#E6EEFF}
+
+/* Tasteful multi-color: emphasize only keywords */
+.g{background:linear-gradient(90deg,#78d8ff,#a7b7ff,#d9a7ff,#ff87c8,#ffcc88);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:900}
+.tag{display:inline-block;padding:4px 8px;border-radius:999px;border:1px solid var(--soft-stroke);background:rgba(255,255,255,.06);color:#EAF1FF;margin-left:8px;font-size:12px}
+.kpi{display:flex;gap:12px;flex-wrap:wrap;margin-top:8px}
+.badge{padding:6px 10px;border-radius:12px;border:1px solid var(--soft-stroke);background:rgba(255,255,255,.06);font-weight:700}
+.badge.c{color:var(--cyan)} .badge.v{color:var(--violet)} .badge.p{color:var(--pink)} .badge.l{color:var(--lime)} .badge.a{color:var(--amber)}
+
+/* ====== SVG Mindmap ====== */
+#mindwrap{margin-top:14px}
+.mind{width:100%;height:480px;border-radius:22px;border:1px solid var(--soft-stroke)}
+.node{cursor:pointer;transition:.2s} .node:hover{filter:brightness(1.2)}
+.link{stroke:rgba(255,255,255,.25);stroke-width:1.5}
+.hide{display:none}
+.legend{display:flex;gap:14px;flex-wrap:wrap;margin:8px 0 0 0}
+.legend span{font-size:12px;opacity:.85}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px}
+
+/* ====== Ambient dots ====== */
+#fx{position:fixed;inset:0;z-index:0;pointer-events:none}
+
+/* ====== Utility ====== */
+.mt{margin-top:10px}
+</style>
+</head>
+<body>
+<canvas id="fx"></canvas>
+<div class="container">
+  <!-- Hero -->
+  <header class="glass hero">
+    <div class="title">AI <span class="g">漫剧</span> · <span class="g">音乐创作</span> · <span class="g">自媒体</span> — 顶级毛玻璃交互报告</div>
+    <div class="sub">苹果玻璃风格 / 可折叠交互 / SVG 思维导图 / 重点用彩，保证高级与可读性</div>
+    <div class="tabs">
+      <div class="tab active" data-target="#tab-comic">AI 漫剧</div>
+      <div class="tab" data-target="#tab-music">AI 音乐</div>
+      <div class="tab" data-target="#tab-media">自媒体创业</div>
+    </div>
+  </header>
+
+  <!-- ===== Core Insight ===== -->
+  <section class="glass panel" id="insights">
+    <details open>
+      <summary data-ico="✨">核心摘要 <span class="tag">三赛道飞轮</span></summary>
+      <div class="content">
+        <p class="lead">以 <span class="g">AI 漫剧</span> 冷启动流量 → 以 <span class="g">AI 音乐</span> 打造可循环资产 → 以 <span class="g">自媒体矩阵</span> 完成信任与转化，三者互相引流、互证增长。</p>
+        <div class="kpi">
+          <div class="badge c">冷启动：7–14 天起量</div>
+          <div class="badge v">播放资产：月度长尾收益</div>
+          <div class="badge l">日更 10–14 条 / 周</div>
+          <div class="badge a">A/B 钩子：3s/10s/收尾</div>
+          <div class="badge p">素材/版权台账常备</div>
+        </div>
+      </div>
+    </details>
+
+    <details>
+      <summary data-ico="🧭">行动清单 <span class="tag">今日即可开工</span></summary>
+      <div class="content">
+        <ol>
+          <li>搭建 1 条 <span class="g">漫剧试验线</span>：同题 3 版本，前三秒三钩子。</li>
+          <li>生成 1 首 <span class="g">版权清晰</span>的单曲：上架 Spotify/Apple Music。</li>
+          <li>启动 1 个主号 + 2 个副号：统一封面/字幕体系。</li>
+          <li>建立 <span class="g">素材授权台账</span> 与发布复盘表：完播、转化、留存。</li>
+        </ol>
+      </div>
+    </details>
+  </section>
+
+  <!-- ===== AI 漫剧 ===== -->
+  <section class="glass panel tab-pane" id="tab-comic">
+    <details open>
+      <summary data-ico="🎬">制作流水线 <span class="tag">SOP</span></summary>
+      <div class="content">
+        <ol>
+          <li>选题/文本：长文→剧情提要→分镜（角色设定与风格锁定）。</li>
+          <li>画面：批量生成场景与角色，避免“脸崩”。</li>
+          <li>时长：30–90s，<span class="g">前 3 秒/10 秒/结尾</span>做强钩子。</li>
+          <li>声画：合成音+音效库；字幕自动对齐。</li>
+          <li>导流：评论关键词、合集、私域/电商落地页。</li>
+        </ol>
+      </div>
+    </details>
+    <details>
+      <summary data-ico="📈">分发与增长 <span class="tag">渠道组合</span></summary>
+      <div class="content">
+        <ul>
+          <li>平台矩阵：抖音/快手/小红书/B 站/YouTube/Shorts/Reels。</li>
+          <li>素材再利用：横竖比变体、封面模板、标题语料库。</li>
+          <li>评估：完播≥65%、互动率≥6%、3 日留存≥25% 为升级阈值。</li>
+        </ul>
+      </div>
+    </details>
+  </section>
+
+  <!-- ===== AI 音乐 ===== -->
+  <section class="glass panel tab-pane hide" id="tab-music">
+    <details open>
+      <summary data-ico="🎛️">制作与发行 <span class="tag">Preset→Master→Multi-Platform</span></summary>
+      <div class="content">
+        <ol>
+          <li>曲风 Preset 库：Citypop/Trap/国风/合成波。</li>
+          <li>人声：<span class="g">自有授权</span>模型或合成嗓音，避免可识别克隆。</li>
+          <li>混母：-12 LUFS 目标响度，平台安全阈值。</li>
+          <li>发行：聚合上架 Spotify/Apple Music/抖音音乐，元数据一致。</li>
+        </ol>
+      </div>
+    </details>
+    <details>
+      <summary data-ico="💰">变现模型 <span class="tag">组合拳</span></summary>
+      <div class="content">
+        <ul>
+          <li>流媒体分成、BGM 授权包、素材集售卖。</li>
+          <li>联名单曲/IP 合作、课程与社群。</li>
+          <li>二创生态：翻唱包、Remix 素材，扩大传播半径。</li>
+        </ul>
+      </div>
+    </details>
+  </section>
+
+  <!-- ===== 自媒体创业 ===== -->
+  <section class="glass panel tab-pane hide" id="tab-media">
+    <details open>
+      <summary data-ico="🧩">账号矩阵 <span class="tag">主号+副号</span></summary>
+      <div class="content">
+        <ul>
+          <li>定位：主号做人设与观点；副号做垂类切片与实验。</li>
+          <li>节奏：日更 10–14 条/周；AB 测试与周复盘。</li>
+          <li>商业化：广告/带货/训练营/工具会员。</li>
+        </ul>
+      </div>
+    </details>
+    <details>
+      <summary data-ico="🛡️">风控与合规 <span class="tag">把风险当产品做</span></summary>
+      <div class="content">
+        <ul>
+          <li>素材授权台账：配音、人声、小说、图片、字体、BGM。</li>
+          <li>广告表述与商标/肖像审查；敏感题材分级。</li>
+          <li>渠道元数据完全一致，防版权冲突下架。</li>
+        </ul>
+      </div>
+    </details>
+  </section>
+
+  <!-- ===== Mind Map (SVG, expandable) ===== -->
+  <section class="glass panel" id="mindwrap">
+    <details open>
+      <summary data-ico="🧠">思维导图 <span class="tag">可展开 SVG</span></summary>
+      <div class="content">
+        <div class="legend">
+          <span><i style="background:#6CCFF6"></i>内容生产</span>
+          <span><i style="background:#7AA5FF"></i>分发与增长</span>
+          <span><i style="background:#FF9FD0"></i>变现</span>
+          <span><i style="background:#86F7B8"></i>风控</span>
+        </div>
+        <svg class="mind" viewBox="0 0 1200 480">
+          <defs>
+            <filter id="s" x="-50%" y="-50%" width="200%" height="200%">
+              <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000" flood-opacity=".45"/>
+            </filter>
+          </defs>
+          <!-- center -->
+          <g id="core" filter="url(#s)">
+            <rect x="550" y="210" rx="14" ry="14" width="120" height="60" fill="#15213d" stroke="rgba(255,255,255,.2)"/>
+            <text x="610" y="245" text-anchor="middle" fill="#EAF1FF" font-weight="900">创业飞轮·核心</text>
+          </g>
+          <!-- branches -->
+          <g class="branch" id="b1" data-toggle="b1n">
+            <path d="M 610 240 C 520 220, 420 200, 340 180" class="link"/>
+            <rect x="260" y="160" rx="10" width="120" height="40" fill="#173a55" stroke="rgba(255,255,255,.25)"/>
+            <text x="320" y="185" text-anchor="middle" fill="#CFE2FF">AI 漫剧</text>
+          </g>
+          <g class="branch" id="b2" data-toggle="b2n">
+            <path d="M 610 240 C 720 220, 840 200, 930 180" class="link"/>
+            <rect x="930" y="160" rx="10" width="120" height="40" fill="#3b294e" stroke="rgba(255,255,255,.25)"/>
+            <text x="990" y="185" text-anchor="middle" fill="#EEDCFF">AI 音乐</text>
+          </g>
+          <g class="branch" id="b3" data-toggle="b3n">
+            <path d="M 610 240 C 520 280, 420 320, 340 340" class="link"/>
+            <rect x="250" y="320" rx="10" width="140" height="40" fill="#183a2e" stroke="rgba(255,255,255,.25)"/>
+            <text x="320" y="345" text-anchor="middle" fill="#D8FFE7">自媒体矩阵</text>
+          </g>
+          <g class="branch" id="b4" data-toggle="b4n">
+            <path d="M 610 240 C 720 280, 840 320, 930 340" class="link"/>
+            <rect x="930" y="320" rx="10" width="120" height="40" fill="#3d2a18" stroke="rgba(255,255,255,.25)"/>
+            <text x="990" y="345" text-anchor="middle" fill="#FFE7C8">风控</text>
+          </g>
+          <!-- children groups -->
+          <g id="b1n" class="hide">
+            <path d="M 320 180 C 280 150, 220 140, 170 140" class="link"/>
+            <text x="140" y="145" fill="#CFE2FF">分镜/角色/场景</text>
+            <path d="M 320 180 C 280 200, 220 220, 170 230" class="link"/>
+            <text x="120" y="235" fill="#CFE2FF">30–90s & 3 钩子</text>
+          </g>
+          <g id="b2n" class="hide">
+            <path d="M 990 180 C 1040 140, 1080 130, 1130 130" class="link"/>
+            <text x="1140" y="135" fill="#EEDCFF">Preset/合成音</text>
+            <path d="M 990 180 C 1040 210, 1080 220, 1130 230" class="link"/>
+            <text x="1140" y="235" fill="#EEDCFF">聚合发行</text>
+          </g>
+          <g id="b3n" class="hide">
+            <path d="M 320 340 C 280 360, 220 370, 170 370" class="link"/>
+            <text x="136" y="373" fill="#D8FFE7">主号/副号</text>
+            <path d="M 320 340 C 280 320, 220 300, 170 300" class="link"/>
+            <text x="126" y="305" fill="#D8FFE7">日更/AB 测</text>
+          </g>
+          <g id="b4n" class="hide">
+            <path d="M 990 340 C 1040 360, 1080 370, 1130 372" class="link"/>
+            <text x="1140" y="374" fill="#FFE7C8">授权台账</text>
+            <path d="M 990 340 C 1040 310, 1080 300, 1130 298" class="link"/>
+            <text x="1140" y="300" fill="#FFE7C8">元数据一致</text>
+          </g>
+        </svg>
+        <div class="lead mt">提示：点击导图四个分支可展开/折叠要点。</div>
+      </div>
+    </details>
+  </section>
+
+  <!-- ===== Expert View ===== -->
+  <section class="glass panel" id="expert">
+    <details open>
+      <summary data-ico="🧠">中国 AI 专家观点 <span class="tag">战略建议</span></summary>
+      <div class="content">
+        <ul>
+          <li><span class="g">一体化供给链</span>：把模型、提示词、素材库、分发脚本做成 <span class="g">可复用模板</span>；把“运营动作”沉淀成 SOP。</li>
+          <li><span class="g">版权与品牌双护城河</span>：所有音色/图片/字体签署授权或自建库，品牌调性与色板统一。</li>
+          <li><span class="g">出海优先</span>：优先做英语/多语版本，叠加 Facebook/YouTube 广告体系，建立美元现金流。</li>
+          <li><span class="g">数据驱动</span>：维护“题材×封面×文案×时长”的测试矩阵，以完播/CTR/转化为核心指标。</li>
+        </ul>
+      </div>
+    </details>
+  </section>
+</div>
+
+<script>
+// Ambient soft dots
+const cvs=document.getElementById('fx');const ctx=cvs.getContext('2d');
+function resize(){cvs.width=innerWidth;cvs.height=innerHeight}resize();addEventListener('resize',resize);
+const dots=[...Array(70)].map(()=>({x:Math.random()*cvs.width,y:Math.random()*cvs.height,vx:(Math.random()-.5)*0.35,vy:(Math.random()-.5)*0.35,r:60+Math.random()*80,c:`rgba(${120+Math.random()*80},${160+Math.random()*60},255,0.16)`}));
+!function tick(){ctx.clearRect(0,0,cvs.width,cvs.height);dots.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<-50||p.x>cvs.width+50)p.vx*=-1;if(p.y<-50||p.y>cvs.height+50)p.vy*=-1;const g=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r);g.addColorStop(0,p.c);g.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=g;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();});requestAnimationFrame(tick)}();
+
+// Tabs
+const tabs=[...document.querySelectorAll('.tab')];
+const panes=[...document.querySelectorAll('.tab-pane')];
+tabs.forEach(t=>t.addEventListener('click',()=>{tabs.forEach(x=>x.classList.remove('active'));t.classList.add('active');panes.forEach(p=>p.classList.add('hide'));document.querySelector(t.dataset.target).classList.remove('hide')}));
+
+// Mindmap toggles
+[...document.querySelectorAll('g.branch')].forEach(b=>b.addEventListener('click',()=>{const id=b.getAttribute('data-toggle');document.getElementById(id).classList.toggle('hide')}));
+</script>
+</body>
+</html>

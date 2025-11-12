@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>《慢牛时代的价值投资》· 五彩交互版（升级）</title>
+<style>
+:root{
+  --bg:#0a0f1e;
+  --txt:#bcd2ff;               /* 主文字不再是白色 */
+  --muted:#9fb2ff;
+  --glass:rgba(255,255,255,.07);
+  --stroke:rgba(150,180,255,.18);
+  --shadow:0 10px 28px rgba(0,0,0,.36), inset 0 0 0 1px var(--stroke);
+  --rad:18px;
+  --ok:#22d3ee; --gain:#34d399; --warn:#f59e0b; --risk:#fb7185;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;color:var(--txt);
+  background:
+    radial-gradient(1000px 600px at 10% -10%,#1a2a6c25,transparent),
+    radial-gradient(900px 500px at 100% 0%,#b21f1f1f,transparent),
+    radial-gradient(1200px 700px at 30% 120%,#fdbb2d1a,transparent),
+    var(--bg);
+  font:16px/1.65 system-ui,Segoe UI,Roboto,PingFang SC,Helvetica,Arial;
+  letter-spacing:.2px;
+}
+.wrap{max-width:1200px;margin:42px auto;padding:0 18px}
+.title{
+  padding:20px 22px;border-radius:22px;background:linear-gradient(135deg,rgba(255,255,255,.06),rgba(255,255,255,.02));
+  box-shadow:var(--shadow);backdrop-filter:blur(18px)
+}
+.g{background:linear-gradient(90deg,#60a5fa,#34d399,#fbbf24,#f472b6,#a78bfa,#60a5fa);-webkit-background-clip:text;background-clip:text;color:transparent}
+.g2{background:linear-gradient(90deg,#a78bfa,#22d3ee,#4ade80,#facc15);-webkit-background-clip:text;background-clip:text;color:transparent}
+.g3{background:linear-gradient(90deg,#f472b6,#fb7185,#facc15,#34d399);-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{color:#a9bcff;font-size:14px;margin-top:6px}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0}
+.chip{
+  padding:10px 14px;border-radius:999px;background:var(--glass);box-shadow:var(--shadow);backdrop-filter:blur(12px);
+  cursor:pointer;user-select:none;transition:transform .1s ease;color:#cfe1ff
+}
+.chip:active{transform:translateY(1px)}
+.tabs{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}
+.tab{border-radius:12px;background:var(--glass);padding:10px 14px;cursor:pointer;box-shadow:var(--shadow);backdrop-filter:blur(10px);color:#cfe1ff}
+.tab.active{background:linear-gradient(135deg,#3b82f622,#06b6d422); outline:1px solid #58c5ff55}
+.cards{display:grid;grid-template-columns:1fr;gap:14px}
+@media(min-width:880px){.cards{grid-template-columns:1fr 1fr}}
+.card{
+  border-radius:18px;padding:16px 18px;background:var(--glass);box-shadow:var(--shadow);backdrop-filter:blur(16px);
+  position:relative;overflow:hidden
+}
+.card h3{margin:0 0 8px 0;font-size:18px}
+.badge{display:inline-block;padding:4px 10px;border-radius:999px;background:linear-gradient(90deg,#22d3ee22,#4ade8022);
+  outline:1px solid #3ee6b555;font-size:12px;margin-left:8px;color:#c8ffe9}
+.meta{font-size:13px;color:#b7c6ff}
+details{border-radius:16px}
+details>summary{
+  list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;
+  background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.02));
+  padding:14px 16px;border-radius:14px;box-shadow:var(--shadow);color:#d5e2ff
+}
+summary::-webkit-details-marker{display:none}
+.pill{padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.08);font-size:12px;color:#d9e8ff}
+.btns{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 0}
+button{
+  border:0;border-radius:14px;padding:11px 16px;background:linear-gradient(135deg,#0ea5e9,#22d3ee);
+  color:#eaf6ff;cursor:pointer;box-shadow:0 10px 26px rgba(14,165,233,.38);font-weight:600
+}
+button.ghost{background:var(--glass);color:#cfe1ff;box-shadow:var(--shadow)}
+.float{
+  position:fixed;right:18px;bottom:18px;display:flex;gap:12px;z-index:9999;   /* 提升点击层级 */
+}
+.dot{width:8px;height:8px;border-radius:50%;background:linear-gradient(135deg,#22d3ee,#a78bfa);box-shadow:0 0 10px #7dd3fc}
+ul,ol{padding-left:22px}
+ul li::marker, ol li::marker{color:#7dd3fc}     /* 列表符号也着色 */
+.ok{color:#7ce3f0}.gain{color:#7ee2b3}.warn{color:#ffd48a}.risk{color:#ff9aaa}
+.quote{padding:14px 16px;border-radius:14px;background:linear-gradient(135deg,#f59e0b22,#ef444422);
+  outline:1px dashed #ffb84d66;color:#ffe2b2}
+svg{max-width:100%;height:auto}
+.mm-node{fill:url(#gradNode);stroke:#6ee7b7;stroke-width:1.2}
+.mm-text{font-size:13px;fill:#e6f3ff}
+.muted{opacity:.85}
+.view-all .panel{display:block !important}   /* 全部模式 */
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="title">
+    <h1 class="g" style="margin:0;font-size:32px">《慢牛时代的价值投资》· 五彩交互版（升级）</h1>
+    <div class="sub">从 <span class="g2">政策&宏观</span> → <span class="g3">行业&公司</span> → 估值 → 配置 → 风控，把“趋势判断”变成“可执行清单”。</div>
+    <div class="toolbar" role="group" aria-label="quick-actions">
+      <div class="chip" data-action="expand-all">一键展开全部</div>
+      <div class="chip" data-action="collapse-all">一键折叠全部</div>
+      <div class="chip" data-action="copy-quotes">复制金句</div>
+    </div>
+    <div class="tabs" id="tabs">
+      <div class="tab active" data-panel="core">核心摘要</div>
+      <div class="tab" data-panel="map">思维导图</div>
+      <div class="tab" data-panel="experts">专家观点</div>
+      <div class="tab" data-panel="etf">估值&ETF工具</div>
+      <div class="tab" data-panel="alloc">资产配置范式</div>
+      <div class="tab" data-panel="risk">风险矩阵</div>
+      <div class="tab" data-panel="quotes">金句卡片</div>
+    </div>
+  </div>
+
+  <!-- Core -->
+  <section id="core" class="panel">
+    <div class="cards">
+      <details open class="card">
+        <summary><span class="dot"></span><h3 class="g2">一句话总纲</h3><span class="badge">三锚共振</span></summary>
+        <div class="meta">政策锚（<span class="ok">适度宽松+产业导向</span>） × 利润锚（<span class="gain">盈利修复</span>） × 估值锚（<span class="ok">风险溢价回落</span>）。以<b class="g">红利</b>打底、<b class="g3">成长</b>取胜、<b class="g2">黄金</b>托底。</div>
+        <div class="btns"><span class="pill">政策稳</span><span class="pill">利润修复</span><span class="pill">估值合理</span></div>
+      </details>
+
+      <details class="card">
+        <summary><span class="dot"></span><h3 class="g3">政策&宏观 · 十条“可落地”</h3><span class="badge">执行视角</span></summary>
+        <ol>
+          <li><b class="g">现代化产业体系</b>四支柱：科创自立、制造数智化、绿色低碳、国际化布局。</li>
+          <li>货币：<span class="ok">适度宽松</span>；财政：<span class="warn">更加积极</span>；国债操作维持流动性。</li>
+          <li>服务业占比升；规上工业利润由负转正 → <span class="gain">利润周期回暖</span>。</li>
+          <li>CPI 由低位回升、PPI 跌幅收窄、PMI 逼近荣枯线——边际修复。</li>
+          <li>目标：稳市场、稳预期、稳增长，为“慢牛”提供制度底座。</li>
+          <li>指数层面：风险偏好回升，<b>结构性</b>强于全面牛。</li>
+          <li>结构层：利润分化扩大，<b>优质赛道</b>成为超额收益来源。</li>
+          <li>资金层：居民/机构“理性做多”提升；<b>ETF</b>为主通道。</li>
+          <li>海外联动：利率/地缘波动 → 黄金、美股敞口做分散。</li>
+          <li>执行法：<span class="g2">自上而下</span>（政策→行业）× <span class="g3">自下而上</span>（公司→估值）。</li>
+        </ol>
+      </details>
+
+      <details class="card">
+        <summary><span class="dot"></span><h3 class="g2">赛道&公司 · 三个“判别式”</h3><span class="badge">选谁</span></summary>
+        <ul>
+          <li><b>行业判别</b>：规模≥千亿 → 价值链“话语权”明确 → 竞争格局（寡头>分散）。</li>
+          <li><b>公司判别</b>：战略聚焦、治理稳健、<u>收入&利润协同增长</u>、现金流/负债健康。</li>
+          <li><b>催化判别</b>：订单/产能/政策/目录/业绩指引中任一出现“加速度”。</li>
+        </ul>
+        <div class="quote">把“好故事”变成“好生意”：<b>质地</b>→<b>价格</b>→<b>催化</b> 三连击齐备才重仓。</div>
+      </details>
+    </div>
+  </section>
+
+  <!-- Map -->
+  <section id="map" class="panel" style="display:none">
+    <div class="card">
+      <h3 class="g2" style="margin:0 0 8px">SVG 思维导图（可缩放）</h3>
+      <svg viewBox="0 0 960 520" aria-label="mindmap">
+        <defs><linearGradient id="gradNode" x1="0" x2="1">
+          <stop offset="0" stop-color="#22d3ee" stop-opacity=".26"/>
+          <stop offset="1" stop-color="#a78bfa" stop-opacity=".26"/>
+        </linearGradient></defs>
+        <rect x="420" y="230" rx="12" ry="12" width="120" height="40" class="mm-node"/>
+        <text x="480" y="255" text-anchor="middle" class="mm-text">慢牛 · 价值投资</text>
+        <g class="muted">
+          <line x1="480" y1="230" x2="200" y2="120" stroke="#60a5fa" stroke-width="1.2"/>
+          <rect x="120" y="95" rx="10" ry="10" width="160" height="38" class="mm-node"/>
+          <text x="200" y="118" text-anchor="middle" class="mm-text">政策&宏观（宽松+修复）</text>
+
+          <line x1="540" y1="250" x2="830" y2="180" stroke="#34d399" stroke-width="1.2"/>
+          <rect x="740" y="160" rx="10" ry="10" width="180" height="38" class="mm-node"/>
+          <text x="830" y="183" text-anchor="middle" class="mm-text">行业&公司（赛道×治理）</text>
+
+          <line x1="480" y1="270" x2="220" y2="420" stroke="#f59e0b" stroke-width="1.2"/>
+          <rect x="120" y="400" rx="10" ry="10" width="220" height="38" class="mm-node"/>
+          <text x="230" y="423" text-anchor="middle" class="mm-text">估值（PE/PB/PS/股息）</text>
+
+          <line x1="420" y1="250" x2="160" y2="250" stroke="#fb7185" stroke-width="1.2"/>
+          <rect x="60" y="232" rx="10" ry="10" width="180" height="38" class="mm-node"/>
+          <text x="150" y="255" text-anchor="middle" class="mm-text">配置（红利/成长/黄金）</text>
+
+          <line x1="540" y1="270" x2="830" y2="360" stroke="#93c5fd" stroke-width="1.2"/>
+          <rect x="720" y="340" rx="10" ry="10" width="220" height="38" class="mm-node"/>
+          <text x="830" y="363" text-anchor="middle" class="mm-text">风控（回撤阈值+再平衡）</text>
+        </g>
+      </svg>
+      <div class="meta">放大/缩小看细节；结构已与各分区一一对应。</div>
+    </div>
+  </section>
+
+  <!-- Experts -->
+  <section id="experts" class="panel" style="display:none">
+    <div class="cards">
+      <details open class="card">
+        <summary><span class="dot"></span><h3 class="g2">金融专家视角 · 结论</h3><span class="badge">判断</span></summary>
+        <ul>
+          <li>这是 <b class="ok">政策友好 + 利润修复 + 估值不贵</b> 的阶段性慢牛；指数缓升、结构分化更强。</li>
+          <li>胜率来自两端：<u>红利稳收益</u> 与 <u>科技制造的景气超额</u>；“介于两者之间”的资产容易被挤压。</li>
+          <li>策略上用 <b>ETF 定海</b> + 少量个股增强阿尔法，靠纪律而非预测。</li>
+        </ul>
+      </details>
+      <details class="card">
+        <summary><span class="dot"></span><h3 class="g3">执行三步 · 直接落地</h3><span class="badge">操作</span></summary>
+        <ol>
+          <li><b>先定底</b>：高股息/红利宽基 40%～50%，目标股息 4%±1%，分红稳定性优先。</li>
+          <li><b>再上锋</b>：AI算力/通信/软件、储能/机器人等景气赛道ETF 30%～40%，择强去弱。</li>
+          <li><b>留保险</b>：黄金/贵金属 10%～15%；海外宽基 0%～10% 做分散。</li>
+        </ol>
+        <div class="meta">风控：组合回撤阈值 ≤ 12% 强制降档；季度再平衡；遇“目录/政策/业绩”三类事件做战术加减。</div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ETF -->
+  <section id="etf" class="panel" style="display:none">
+    <div class="cards">
+      <details open class="card">
+        <summary><span class="dot"></span><h3 class="g2">估值“红线”与使用法</h3><span class="badge">PE/PB/PS/股息</span></summary>
+        <ul>
+          <li>有利润：看 <b>PE</b>（行业对比 + 历史分位）。<u>同业 30% 分位以下</u>优先。</li>
+          <li>利润薄/扩张期：看 <b>PS</b>（营收增速≥PS倍数的 1/2）。</li>
+          <li>重资产/金融/周期：看 <b>PB×ROE</b>（ROE 稳定>12% 时 PB≤2.0 具性价比）。</li>
+          <li>稳现金回报：看 <b>股息率</b> 与 <b>分红稳定性</b>（3年连续派息且覆盖率>1）。</li>
+        </ul>
+        <div class="quote">框架：<b>质地</b>（增长&治理）→ <b>价格</b>（估值红线）→ <b>催化</b>（政策/订单/业绩）。</div>
+      </details>
+      <details class="card">
+        <summary><span class="dot"></span><h3 class="g3">ETF 把手清单（示例类别）</h3><span class="badge">选型参考</span></summary>
+        <ul>
+          <li>红利底仓：红利/高股息宽基，或电信/能源高分红。</li>
+          <li>成长锋刃：半导体/算力/计算机/通信/机器人/储能等景气链。</li>
+          <li>对冲与分散：黄金/贵金属；纳指/标普类宽基（小仓位）。</li>
+        </ul>
+        <div class="meta">不同券商代码不一，按你可交易的同类 ETF 替换即可。</div>
+      </details>
+    </div>
+  </section>
+
+  <!-- Allocation -->
+  <section id="alloc" class="panel" style="display:none">
+    <div class="cards">
+      <details open class="card">
+        <summary><span class="dot"></span><h3 class="g2">配置范式 · 433 进阶</h3><span class="badge">稳中求优</span></summary>
+        <ul>
+          <li><b>40%</b> 红利&高股息（电信/能源/央国企高分红宽基）。</li>
+          <li><b>30%</b> 成长ETF（AI/通信/软件/储能/机器人等景气链）。</li>
+          <li><b>30%</b> 黄金/海外宽基/现金等“缓冲层”。</li>
+        </ul>
+        <div class="meta">当成长端相对底仓涨幅 >12%：兑现 1/3 盈利回补底仓或黄金；季度再平衡。</div>
+      </details>
+      <details class="card">
+        <summary><span class="dot"></span><h3 class="g3">两套模板（10万基准）</h3><span class="badge">可直接抄</span></summary>
+        <ul>
+          <li><b>能赚钱版</b>：红利50% / 成长30% / 黄金20%，目标年化 12%～18%，波动低。</li>
+          <li><b>多赚钱版</b>：红利35% / 成长50% / 黄金15%，目标年化 18%～28%，波动高。</li>
+        </ul>
+        <div class="quote">纪律胜过预测：<u>回撤阈值</u> + <u>时间再平衡</u> + <u>事件驱动</u>。</div>
+      </details>
+    </div>
+  </section>
+
+  <!-- Risk -->
+  <section id="risk" class="panel" style="display:none">
+    <div class="cards">
+      <details open class="card">
+        <summary><span class="dot"></span><h3 class="g2">风险矩阵 · 触发&对冲</h3><span class="badge">风控</span></summary>
+        <ul>
+          <li>宏观：增长不及预期、内需疲软、外需波动。</li>
+          <li>流动性：海外利率/汇率冲击 → <b>黄金</b>与<b>海外宽基</b>做分散。</li>
+          <li>行业：产能出清不彻底、价格战反复、技术迭代超预期。</li>
+          <li>公司：治理掣肘、现金流承压、并购失误、客户集中。</li>
+        </ul>
+        <div class="meta">规则：组合回撤 ≤12% 强制降档；黑天鹅时黄金/现金权重临时上调 5%～10%。</div>
+      </details>
+    </div>
+  </section>
+
+  <!-- Quotes -->
+  <section id="quotes" class="panel" style="display:none">
+    <div class="cards">
+      <div class="card">
+        <h3 class="g3" style="margin:0 0 8px">金句卡片</h3>
+        <ul id="quotesList">
+          <li>基本面改善 → 价值提升；估值回归只是时间问题。</li>
+          <li>红利打底、成长取胜、黄金托底，是当前阶段的“三角稳态”。</li>
+          <li>用 ETF 把对的方向买足，再用少量个股去增强阿尔法。</li>
+          <li>投资不是押赛马，是在赔率合适时下注并管理回撤。</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Floating buttons（提高点击层级与反馈） -->
+  <div class="float" aria-label="expand-collapse">
+    <button id="btnExpand" title="展开所有分区与卡片">展开全部</button>
+    <button class="ghost" id="btnCollapse" title="折叠所有分区与卡片">折叠全部</button>
+  </div>
+</div>
+
+<script>
+/* —— Tab 切换 —— */
+const tabs = document.querySelectorAll('.tab');
+const panels = document.querySelectorAll('.panel');
+function showPanel(id){
+  document.body.classList.remove('view-all');
+  tabs.forEach(x=>x.classList.toggle('active', x.dataset.panel===id));
+  panels.forEach(p=>p.style.display = (p.id===id)?'block':'none');
+}
+tabs.forEach(t=>t.addEventListener('click',()=>showPanel(t.dataset.panel)));
+
+/* —— 展开/折叠 所有 details —— */
+function setAllDetails(open){ document.querySelectorAll('details.card').forEach(d=>d.open=open); }
+
+/* —— 一键展开：进入“全部视图模式” + 打开所有 details —— */
+function expandAll(){
+  document.body.classList.add('view-all');
+  panels.forEach(p=>p.style.display='block');
+  setAllDetails(true);
+}
+/* —— 一键折叠：回到当前激活 tab，并折叠非首卡 —— */
+function collapseAll(){
+  document.body.classList.remove('view-all');
+  const act = document.querySelector('.tab.active')?.dataset.panel || 'core';
+  showPanel(act);
+  document.querySelectorAll('details.card').forEach((d,i)=>d.open = (i===0)); // 每面板保留第一个展开
+}
+
+/* 浮动按钮（提升 z-index，确保可点） */
+document.getElementById('btnExpand').addEventListener('click', expandAll, {passive:true});
+document.getElementById('btnCollapse').addEventListener('click', collapseAll, {passive:true});
+
+/* 顶部 chip */
+document.querySelectorAll('.chip').forEach(c=>{
+  c.addEventListener('click',()=>{
+    const a=c.dataset.action;
+    if(a==='expand-all') expandAll();
+    if(a==='collapse-all') collapseAll();
+    if(a==='copy-quotes'){
+      const txt=[...document.querySelectorAll('#quotesList li')].map(li=>'- '+li.textContent).join('\n');
+      navigator.clipboard.writeText(txt).then(()=>{
+        c.textContent='已复制金句 ✅'; setTimeout(()=>c.textContent='复制金句',1500);
+      });
+    }
+  });
+});
+
+/* summary 交互可键控，修复“点不开” */
+document.querySelectorAll('summary').forEach(s=>{
+  s.style.userSelect='none'; s.tabIndex=0;
+  s.addEventListener('keydown',e=>{
+    if(e.key==='Enter'||e.key===' ') { e.preventDefault(); s.parentElement.open=!s.parentElement.open; }
+  });
+});
+</script>
+</body>
+</html>

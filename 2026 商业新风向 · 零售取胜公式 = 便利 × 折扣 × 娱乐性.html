@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>日本新消费考察 · 核心摘要</title>
+  <style>
+    /*
+      此版本回退到较早的布局结构，同时按照用户要求对颜色进行了调整：
+      - 基础文本色改为柔和的浅蓝灰 (#b9d8ff)，避免纯白刺眼；
+      - 高亮标题和按钮统一使用单色蓝渐变（#007BFF→#00C6FF），不再使用多彩渐变；
+      - 保留玻璃磨砂风格和深色背景，以提升对比度并确保阅读舒适；
+      - 思维导图节点使用新的蓝色渐变；
+    */
+    :root{
+      --bg: #0a0f1a;
+      --glass: rgba(255,255,255,.06);
+      --glass-2: rgba(255,255,255,.10);
+      --stroke: rgba(255,255,255,.22);
+      --txt: #b9d8ff;              /* 基本文字色，柔和淡蓝灰 */
+      --muted: #aab6d5;            /* 次要文字色 */
+      --ok: #6dc6ff;               /* 正向标识色 */
+      --warn: #ffbe6b;             /* 警示标识色 */
+      --accent: linear-gradient(90deg,#ff9cf3,#7c6cff,#2fd7ff,#43f59e,#ffd26a,#ff9cf3); /* 标题和高亮的蓝色渐变 */
+      --shadow: 0 8px 30px rgba(0,0,0,.35);
+      --radius: 18px;
+    }
+    *{box-sizing:border-box;}
+    html,body{height:100%;}
+    body{
+      margin:0;
+      background:
+        radial-gradient(1200px 800px at 10% -10%, #112, transparent 60%),
+        radial-gradient(1200px 800px at 110% 10%, #10212f, transparent 60%),
+        var(--bg);
+      color:var(--txt);
+      font: 16px/1.65 ui-sans-serif,system-ui,-apple-system,"HarmonyOS Sans","MiSans","PingFang SC","Segoe UI",Roboto,Helvetica,Arial;
+      overflow-x:hidden;
+    }
+
+    /* 漂浮光点背景 */
+    #fx{position:fixed;inset:0;z-index:-1}
+
+    /* 页面框架 */
+    .wrap{max-width:1200px;margin:32px auto;padding:0 16px;min-height:100vh;}
+    .hero{
+      position:relative;padding:28px;border-radius:var(--radius);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      backdrop-filter: blur(14px);
+      border:1px solid var(--stroke);
+      box-shadow: var(--shadow);
+    }
+    .tag{
+      display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;
+      border:1px solid var(--stroke);
+      background:var(--glass);
+      font-weight:600;letter-spacing:.3px;color:#89caff;
+    }
+    .title{
+      margin:12px 0 2px;
+      font-size:clamp(28px,4.2vw,44px);
+      line-height:1.15;
+      background:var(--accent);
+      -webkit-background-clip:text;background-clip:text;color:transparent;
+      font-weight:800;letter-spacing:.5px;
+    }
+    .subtitle{color:#9bbfff;margin:6px 0 10px;font-weight:600;}
+
+    .grid{display:grid;gap:16px;grid-template-columns:repeat(12,1fr);}
+    .grid > *{grid-column:span 12;}
+    @media (min-width:900px){
+      .grid > .g7{grid-column:span 7;}
+      .grid > .g5{grid-column:span 5;}
+    }
+
+    /* 玻璃卡片（可折叠） */
+    details.block{
+      border:1px solid var(--stroke);
+      border-radius:var(--radius);
+      background:var(--glass);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      transition:border-color .3s ease, background .3s ease, transform .3s ease;
+    }
+    details.block[open]{background:var(--glass-2);transform:translateY(-1px);}
+    summary{
+      list-style:none;
+      cursor:pointer;
+      padding:18px 18px 18px 20px;
+      position:relative;
+      display:flex;
+      gap:14px;
+      align-items:flex-start;
+      user-select:none;
+    }
+    summary::-webkit-details-marker{display:none;}
+    .bullet{
+      flex:0 0 28px;height:28px;border-radius:9px;
+      background:var(--accent);
+      filter:saturate(140%);
+      box-shadow:0 4px 14px rgba(0,0,0,.35) inset,0 0 0 1px rgba(255,255,255,.15);
+    }
+    .h{
+      margin:0;font-size:18px;font-weight:800;letter-spacing:.3px;
+      background:var(--accent);
+      -webkit-background-clip:text;background-clip:text;color:transparent;
+    }
+    .sum{
+      color:var(--muted);
+      font-size:13px;
+      margin-top:6px;
+    }
+    .content{padding:0 22px 20px 22px;border-top:1px dashed var(--stroke);}
+    .k{
+      display:inline-block;
+      padding:2px 8px;
+      border-radius:999px;
+      font-weight:700;
+      letter-spacing:.2px;
+      background: rgba(0,170,255,.12);
+      border:1px solid rgba(0,170,255,.35);
+      color:#8ccfff;
+      margin:0 4px;
+    }
+    .k.green{
+      background: rgba(67,245,158,.12);
+      border-color: rgba(67,245,158,.35);
+      color: #6ff5bc;
+    }
+    .k.amber{
+      background: rgba(255,207,107,.12);
+      border-color: rgba(255,207,107,.35);
+      color:#ffda8a;
+    }
+    .ok{color:var(--ok);font-weight:700;}
+    .warn{color:var(--warn);font-weight:700;}
+
+    /* 列表微型标签 */
+    .chips{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 2px;}
+    .chip{
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid var(--stroke);
+      background:rgba(255,255,255,.06);
+      font-size:12px;
+      color:#b2cbff;
+    }
+    .num{font-variant-numeric:tabular-nums;font-weight:800;color:#8ec4ff;}
+
+    /* 右侧小面板 */
+    .panel{
+      border:1px solid var(--stroke);
+      border-radius:var(--radius);
+      background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03));
+      padding:16px;
+      box-shadow:var(--shadow);
+    }
+    .panel h4{margin:0 0 10px;font-size:14px;letter-spacing:.3px;color:#9bbfff;}
+    .panel li{margin:6px 0;color:var(--muted);}
+
+    /* 思维导图容器 */
+    .mind{
+      border:1px solid var(--stroke);
+      border-radius:var(--radius);
+      background:rgba(255,255,255,.04);
+      padding:8px;
+      box-shadow:var(--shadow);
+      overflow:auto;
+    }
+    svg{width:100%;height:650px;display:block;}
+    .node{cursor:pointer;transition:transform .2s ease;}
+    .node:hover{transform:translateY(-2px);}
+    .node rect{
+      fill:url(#g1);
+      stroke: rgba(255,255,255,.35);
+      stroke-width:.8;
+      rx:10;ry:10;
+      filter: drop-shadow(0 2px 6px rgba(0,0,0,.25));
+    }
+    .node text{font-weight:700;font-size:14px;fill:var(--txt);}
+    .edge{stroke:#3abff8;stroke-opacity:.35;stroke-width:2;}
+
+    /* 卡片开合动画 */
+    @keyframes pop{from{transform:scale(.98);opacity:.0}to{transform:scale(1);opacity:1}}
+    .pop{animation:pop .35s cubic-bezier(.2,.9,.2,1.1);}
+
+    /* 引用样式 */
+    .quote{
+      margin:10px 0;
+      padding:12px 14px;
+      border-left:3px solid #ffd26a;
+      background:rgba(0,123,255,.08);
+      border-radius:10px;
+      color:var(--txt);
+    }
+
+    /* 底部按钮 */
+    .bar{
+      position:sticky;
+      bottom:14px;
+      display:flex;
+      justify-content:center;
+      pointer-events:none;
+    }
+    .btn{
+      pointer-events:auto;
+      border:1px solid var(--stroke);
+      background:linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.02));
+      color:#9bbfff;
+      font-weight:800;
+      letter-spacing:.5px;
+      padding:10px 16px;
+      border-radius:14px;
+      cursor:pointer;
+      backdrop-filter:blur(12px);
+    }
+    .btn:hover{transform:translateY(-1px);}
+    .hidden{display:none;}
+    .mono{font-variant-numeric: tabular-nums;}
+    .tbl{width:100%;border-collapse:collapse;overflow:hidden;border-radius:12px;border:1px solid var(--stroke);}
+    .tbl th,.tbl td{padding:10px 12px;border-bottom:1px dashed var(--stroke);}
+    .tbl th{color:#9bbfff;text-align:left;background:rgba(255,255,255,.04);}
+    .tbl tr:last-child td{border-bottom:none;}
+  
+/* 自定义折叠按钮为金色 */
+.btn {
+  border:1px solid rgba(255,215,0,.6) !important;
+  background:linear-gradient(90deg,#FFD700,#FFC857,#FFD700) !important;
+  color:#4e3a00 !important;
+}
+.btn:hover {
+  background:linear-gradient(90deg,#FFE27A,#FFD953,#FFE27A) !important;
+}
+
+@media (min-width:900px) {
+  .grid > .g7 { grid-column: span 6; }
+  .grid > .g5 { grid-column: span 6; }
+}
+</style>
+</head>
+<body>
+<canvas id="fx"></canvas>
+<div class="wrap">
+  <!-- 标题区 -->
+  <section class="hero pop">
+    <div class="grid">
+      <div class="g7">
+        <div class="tag">🗼 日本新消费 · 5天4晚实战观察</div>
+        <h1 class="title">2026 商业新风向 · <span>零售取胜公式 = 便利 × 折扣 × 娱乐性</span></h1>
+        <div class="subtitle">基于直播全文精炼：硬折扣本质卷<span class="ok">效率</span>，不是只卷<span class="warn">价格</span>；社区商业重组与银发/宠物赛道是「中国土壤」里的确定性机会。</div>
+        <div class="chips">
+          <div class="chip">📌 唐吉诃德：<b>SKU海</b> + <b>迷宫动线</b> + <b>尾货拍卖</b></div>
+          <div class="chip">📉 EDLP：OK超市「天天低价 + 质量」</div>
+          <div class="chip">👵 银发：食养先行（低GI/高蛋白/轻社交）</div>
+          <div class="chip">🐶 宠物：老龄犬软粮&辅具</div>
+          <div class="chip">🍕 产品开发：森林-树-目的</div>
+        </div>
+      </div>
+      <div class="g5">
+        <div class="panel">
+          <h4>快速要点（适配中国）</h4>
+          <ul>
+            <li>功能性商品 → 更低价位带；情绪型/颜值型 → 增值溢价</li>
+            <li>社区 15 分钟圈：便利 × 轻社交 × 服务型SKU</li>
+            <li>用数据化/AI驱动选品、补货、损耗与尾货清理</li>
+            <li>「宽品类 + 单品深度」= 梯形选品法</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 主内容区 -->
+  <div class="grid" style="margin-top:18px">
+    <div class="g7">
+      <!-- 核心摘要 -->
+      <details class="block" open>
+        <summary>
+          <div class="bullet"></div>
+          <div>
+            <h3 class="h">一、核心摘要（可落地）</h3>
+            <div class="sum">把日本样本移植到中国土壤，遵循「低价刚需 × 服务/娱乐差异化」双轮驱动。</div>
+          </div>
+        </summary>
+        <div class="content">
+          <table class="tbl">
+            <thead><tr><th>主题</th><th>关键结论</th><th>行动提示</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><span class="k">硬折扣</span></td>
+                <td>不仅卷价格，核心是 <span class="ok">极致效率</span>（极简装修、快周转、尾货低价、主理人放权）</td>
+                <td>打造 <b>快动线/强制路线</b>，用尾货群每日拍卖，主理人对毛利和周转负责</td>
+              </tr>
+              <tr>
+                <td><span class="k green">娱乐零售</span></td>
+                <td>线下「淘货感」＝线下版淘宝 + 盲盒心理</td>
+                <td>构建「SKU岛」与主题墙，窄通道强化发现感</td>
+              </tr>
+              <tr>
+                <td><span class="k amber">社区重组</span></td>
+                <td>便利 × 轻社交 × 服务（营养/睡眠/理疗/到家）</td>
+                <td>在 15 分钟生活圈内叠加服务：长者食堂、健康档案、睡眠测评、理疗到家</td>
+              </tr>
+              <tr>
+                <td><span class="k">产品开发</span></td>
+                <td>「森林-树-目的」：先锁痛点，再定方案</td>
+                <td>披萨案例：圆形口感+罗勒叶降疑虑；中国切入早餐场景，长条+空炸友好，锁定客单 ¥12</td>
+              </tr>
+              <tr>
+                <td>银发/宠物</td>
+                <td>人老龄化 → 食养与社群；宠物老龄化 → 软粮与辅具链</td>
+                <td>银发食堂：低GI+高蛋白；宠物链：老犬软粮+关节辅具+上门喂宠+远程看护</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </details>
+
+      <!-- 2026 行动清单 -->
+      <details class="block">
+        <summary>
+          <div class="bullet"></div>
+          <div>
+            <h3 class="h">二、2026 赢面行动清单（10 条）</h3>
+            <div class="sum">从选品到运营的「一步到位」执行表。</div>
+          </div>
+        </summary>
+        <div class="content">
+          <ol>
+            <li><b>门店效率战</b>：1 周完成动线收窄/端架强主题陈列试点；看客单、转化、停留三指标。</li>
+            <li><b>价格锚点</b>：早餐商品线设置 12 元/人组合包，增加长条快烤 SKU 与现场演示。</li>
+            <li><b>自有品牌</b>：围绕“DG I·高蛋白·便携”上新 3 款；与药妆/生鲜端做跨类联陈。</li>
+            <li><b>银发服务角</b>：导入营养咨询 + 理疗微服务（每晚 1 小时）；构建分龄陈列模板。</li>
+            <li><b>宠物订阅</b>：老年犬软粮 + 关节零食 + 应急小包，月订阅与上门关怀打包。</li>
+            <li><b>尾货日拍</b>：建立供应商日拍群，主理人 7 日考核毛利/周转/拍卖回收率。</li>
+            <li><b>早餐经济</b>：开发长条披萨/牛排条/豆腐棒；客单控制 ≤ ¥12；配套空气炸锅演示。</li>
+            <li><b>银发社群</b>：50+ 女性专属健身/课程/时尚角；举办公益讲座形成粘性。</li>
+            <li><b>宠物养老链</b>：首先在上海试点上门喂宠 + AI 摄护服务；建立社区宠物日托。</li>
+            <li><b>数据日节奏</b>：用 AI 做日补货、日损耗预警、日价格动态调整。</li>
+          </ol>
+        </div>
+      </details>
+
+      <!-- 日本样本拆解 -->
+      <details class="block">
+        <summary>
+          <div class="bullet"></div>
+          <div>
+            <h3 class="h">三、日本样本拆解（唐吉诃德 / OK 超市 / 产品方法）</h3>
+            <div class="sum">把「便利 × 折扣 × 娱乐性」翻译成中国门店的三层结构。</div>
+          </div>
+        </summary>
+        <div class="content">
+          <p class="quote"><b>唐吉诃德</b>：SKU 极多、品类岛、主题墙、窄通道、24 小时、游客友好；员工放权 + 尾货拍卖 = 低进高效。</p>
+          <ul>
+            <li>结构：发现层（岛/墙）→ 快取层（刚需快走位）→ 惊喜层（尾货/断码端架）。</li>
+            <li>机制：区块主理人 KPI = 毛利率 × 周转 × 拍卖回收率（周度公示）。</li>
+          </ul>
+          <p class="quote"><b>OK 超市</b>：EDLP 天天低价 + 严控损耗 + 高质量自有品牌。</p>
+          <ul>
+            <li>做法：设置价格锚点墙（三大刚需品类）+ 损耗日报（时段/柜位）+ 自有品牌补位。</li>
+          </ul>
+          <p class="quote"><b>产品开发（森林-树-目的）</b>：先收集“不购买/不满意”原因→聚焦一处痛点。</p>
+          <ul>
+            <li>披萨实例：罗勒叶必见、圆形口感、熟面团；中国模式：早餐长条 × 空炸友好。</li>
+            <li>价格策略：早餐客单 ≤ ¥12；“单片 + 牛奶”组合锚定。</li>
+          </ul>
+        </div>
+      </details>
+
+      <!-- 银发与宠物 -->
+      <details class="block">
+        <summary>
+          <div class="bullet"></div>
+          <div>
+            <h3 class="h">四、银发 / 宠物：两个“长坡厚雪”</h3>
+            <div class="sum">人老龄化 → 食养与社群；宠物老龄化 → 软粮与辅具服务链。</div>
+          </div>
+        </summary>
+        <div class="content">
+          <h4 class="h" style="font-size:16px;margin:6px 0 8px">银发：食养与社群</h4>
+          <ul>
+            <li>长者食堂：低 GI + 高蛋白；聘用营养师制定四季菜单。</li>
+            <li>轻运动：手指操/桌游/轻力量；女性 50+ 专属健身 & 时尚角。</li>
+            <li>健康档案：慢病数据对接社区医院；睡眠评估＋理疗空间。</li>
+          </ul>
+          <h4 class="h" style="font-size:16px;margin:14px 0 8px">宠物：软粮与订阅服务</h4>
+          <ul>
+            <li>产品：老年犬软粮，关节辅具与防地震安抚套件。</li>
+            <li>服务：上门喂宠 + AI 远程摄护 + 节假日托管；先从上海等老龄高地试点。</li>
+          </ul>
+        </div>
+      </details>
+
+      <!-- 日本零售金融专家视角 -->
+      <details class="block">
+        <summary>
+          <div class="bullet"></div>
+          <div>
+            <h3 class="h">五、金融视角｜日本零售金融专家给中国市场的 6 点判断</h3>
+            <div class="sum">结合日本 30 年低增经验与中国当下窗口期。</div>
+          </div>
+        </summary>
+        <div class="content">
+          <ol>
+            <li>支付结构多元化：融合二维码、IC 卡、NFC 与快捷支付，以“顾客时长最短”为核心。</li>
+            <li>预付与闭环：通过储值卡/预付账户构建复购壁垒；日本便利店 30% 销售依赖预付。</li>
+            <li>分龄金融：针对中老年推出更友好的理财/小额保险；安心保 + 日常消费积分联动。</li>
+            <li>忠诚度经济学：会员等级与信用挂钩，积分折抵商品；构建“用数即得”的正向循环。</li>
+            <li>风险与合规：借助区块链追溯供应链，对冲货品调包与伪造风险。</li>
+            <li>电子价签 × 支付一体：门店价签兼顾支付入口，减少收银人力。</li>
+          </ol>
+        </div>
+      </details>
+
+      <!-- 方法卡片 -->
+      <details class="block">
+        <summary>
+          <div class="bullet"></div>
+          <div>
+            <h3 class="h">六、快速落地工具包</h3>
+            <div class="sum">开店即用的 SOP 表单与结构。</div>
+          </div>
+        </summary>
+        <div class="content">
+          <ul>
+            <li>《区块主理人 KPI 表》：毛利/周转/回收/损耗/动线热度</li>
+            <li>《尾货日拍规则》：上新时点、底价、展陈位、跨店调拨</li>
+            <li>《社区服务日历》：营养讲座、睡眠评估、女性 50+ 轻运动</li>
+            <li>《早餐经济开发清单》：形态、加热时长、口感词库、价格锚点</li>
+          </ul>
+        </div>
+      </details>
+    </div>
+
+    <!-- 右侧内容区 -->
+    <div class="g5">
+      <!-- 思维导图 -->
+      <div class="mind pop">
+        <svg id="map" viewBox="0 0 1200 520" preserveAspectRatio="xMidYMid meet">
+          <defs>
+            <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#007BFF" />
+              <stop offset="50%" stop-color="#00C6FF" />
+              <stop offset="100%" stop-color="#007BFF" />
+            </linearGradient>
+          </defs>
+          <!-- edges -->
+          <g id="edges" class="edge"></g>
+          <!-- nodes -->
+          <g id="nodes"></g>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- 底部按钮 -->
+  <div class="bar">
+    <button class="btn" onclick="toggleDash()">全部展开/收起</button>
+  </div>
+
+</div>
+
+<script>
+/* 漂浮光点动画 */
+const c = document.getElementById('fx'), ctx = c.getContext('2d');
+function resize(){ c.width = innerWidth; c.height = innerHeight; }
+addEventListener('resize', resize); resize();
+const pts = Array.from({length:80}, () => ({
+  x: Math.random()*c.width,
+  y: Math.random()*c.height,
+  vx: (Math.random()-.5)*.6,
+  vy: (Math.random()-.5)*.6,
+  r: Math.random()*2+0.8
+}));
+function step(){
+  ctx.clearRect(0,0,c.width,c.height);
+  for(const p of pts){
+    p.x+=p.vx; p.y+=p.vy;
+    if(p.x<0||p.x>c.width) p.vx*=-1;
+    if(p.y<0||p.y>c.height) p.vy*=-1;
+    ctx.globalAlpha=.6;
+    ctx.beginPath();
+    ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    ctx.fillStyle='rgba(100,160,255,.25)';
+    ctx.fill();
+  }
+  requestAnimationFrame(step);
+}
+step();
+
+/* 卡片展开收起动画 */
+document.querySelectorAll('details.block').forEach(d => {
+  d.addEventListener('toggle', () => {
+    const ctn = d.querySelector('.content');
+    if(!ctn) return;
+    ctn.style.height = d.open ? '0px' : ctn.scrollHeight+'px';
+    requestAnimationFrame(() => {
+      ctn.style.transition = 'height .42s cubic-bezier(.25,.9,.25,1)';
+      ctn.style.height = d.open ? ctn.scrollHeight+'px' : '0px';
+      setTimeout(() => {
+        ctn.style.height = '';
+        ctn.style.transition = '';
+      }, 450);
+    });
+  });
+});
+
+/* 底部按钮逻辑：展开/收起所有区块 */
+function toggleDash(){
+  const all = document.querySelectorAll('details.block');
+  const shouldOpen = Array.from(all).some(d => !d.open);
+  all.forEach(d => { d.open = shouldOpen; });
+}
+
+/* 思维导图生成 */
+const nodes = [
+  {id:'root', x:600, y:250, w:260, h:50, text:'日本新消费 → 中国落地', pid:null},
+  {id:'A', pid:'root', x:280, y:110, w:200, h:44, text:'硬折扣 = 效率'},
+  {id:'B', pid:'root', x:930, y:120, w:220, h:44, text:'娱乐性零售'},
+  {id:'C', pid:'root', x:260, y:380, w:220, h:44, text:'社区商业重组'},
+  {id:'D', pid:'root', x:930, y:380, w:220, h:44, text:'银发 / 宠物'},
+  // 子节点
+  {id:'A1', pid:'A', x:120, y:50, w:200, h:40, text:'极简装修/快周转'},
+  {id:'A2', pid:'A', x:120, y:110, w:200, h:40, text:'尾货日拍'},
+  {id:'A3', pid:'A', x:120, y:170, w:200, h:40, text:'主理人放权'},
+  {id:'B1', pid:'B', x:1070, y:50, w:220, h:40, text:'SKU 岛/主题墙'},
+  {id:'B2', pid:'B', x:1070, y:110, w:220, h:40, text:'迷宫动线'},
+  {id:'B3', pid:'B', x:1070, y:170, w:220, h:40, text:'24 小时/游客友好'},
+  {id:'C1', pid:'C', x:120, y:330, w:220, h:40, text:'便利 × 轻社交'},
+  {id:'C2', pid:'C', x:120, y:390, w:220, h:40, text:'营养/睡眠/理疗'},
+  {id:'C3', pid:'C', x:120, y:450, w:220, h:40, text:'到家服务'},
+  {id:'D1', pid:'D', x:1070, y:330, w:230, h:40, text:'银发：食养先行'},
+  {id:'D2', pid:'D', x:1070, y:390, w:230, h:40, text:'宠物：软粮/辅具'},
+  {id:'D3', pid:'D', x:1070, y:450, w:230, h:40, text:'AI 远程看护'},
+];
+const gN = document.getElementById('nodes');
+const gE = document.getElementById('edges');
+const childrenMap = {};
+nodes.forEach(n => { if(n.pid){ childrenMap[n.pid] = (childrenMap[n.pid]||[]).concat(n.id); } });
+const visible = new Set(nodes.filter(n => !n.pid || ['A','B','C','D'].includes(n.id)).map(n => n.id));
+function draw(){
+  gN.innerHTML=''; gE.innerHTML='';
+  const byId = Object.fromEntries(nodes.map(n => [n.id, n]));
+  function addNode(n){
+    const g = document.createElementNS('http://www.w3.org/2000/svg','g');
+    g.setAttribute('class','node');
+    g.setAttribute('data-id', n.id);
+    const rect = document.createElementNS('http://www.w3.org/2000/svg','rect');
+    rect.setAttribute('x', n.x - n.w/2);
+    rect.setAttribute('y', n.y - n.h/2);
+    rect.setAttribute('width', n.w);
+    rect.setAttribute('height', n.h);
+    g.appendChild(rect);
+    const text = document.createElementNS('http://www.w3.org/2000/svg','text');
+    text.setAttribute('x', n.x);
+    text.setAttribute('y', n.y+4);
+    text.setAttribute('text-anchor','middle');
+    text.textContent = n.text;
+    g.appendChild(text);
+    g.addEventListener('click', () => toggle(n.id));
+    gN.appendChild(g);
+  }
+  function addEdge(a,b){
+    const A = byId[a], B = byId[b];
+    const path = document.createElementNS('http://www.w3.org/2000/svg','path');
+    const d = `M${A.x} ${A.y} C ${(A.x+B.x)/2} ${A.y}, ${(A.x+B.x)/2} ${B.y}, ${B.x} ${B.y}`;
+    path.setAttribute('d', d);
+    gE.appendChild(path);
+  }
+  visible.forEach(id => {
+    const n = byId[id];
+    addNode(n);
+    if(n.pid && visible.has(n.pid)) addEdge(n.pid, n.id);
+  });
+}
+function toggle(id){
+  const kids = childrenMap[id] || [];
+  const anyHidden = kids.some(k => !visible.has(k));
+  kids.forEach(k => { anyHidden ? visible.add(k) : visible.delete(k); });
+  draw();
+}
+draw();
+</script>
+</body>
+</html>
